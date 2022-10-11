@@ -24,10 +24,23 @@ const server = http.createServer((req, res) => {
         return res.end()
     }
     if (url === '/page2' && method === 'POST') {
-        fs.writeFileSync('message.txt', 'DUMMY TEXT')
-        res.statusCode = 302
-        res.setHeader('Location', '/')
-        return res.end()
+        const body = []
+        req.on('data', (chunk) => {
+            console.log(chunk)
+            body.push(chunk)
+        })
+        req.on('end', () => {
+            // end tells us the chunks have all been loaded
+            // need to buffer the data to interact with all chunks
+            const parsedBody = Buffer.concat(body).toString()
+            const message = parsedBody.split('=')[1]
+            // message="input message" will split at = and index1 after that
+            fs.writeFile('message.txt', message, (err) => {
+                res.statusCode = 302
+                res.setHeader('Location', '/')
+                return res.end()
+            })
+        })
     }
     res.setHeader('Content-Type', 'text/html')
     res.write('<html>')
