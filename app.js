@@ -1,6 +1,17 @@
-const http = require('http')
-const routes = require('./routes')
+const express = require('express')
+const adminRouter = require('./routes/admin')
+const shopRouter = require('./routes/shop')
 
-const server = http.createServer(routes)
+const app = express()
 
-server.listen(3000)
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
+app.use('/admin', adminRouter)
+app.use(shopRouter)
+
+app.use((req, res, next) => {
+    res.status(404).send('<h1>Page Not Found!</h1>')
+})
+
+app.listen(3000)

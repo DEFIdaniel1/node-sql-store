@@ -19,7 +19,7 @@ const requestHandler = (req, res) => {
             console.log(chunk)
             body.push(chunk)
         })
-        req.on('end', () => {
+        return req.on('end', () => {
             // end tells us the chunks have all been loaded
             // need to buffer the data to interact with all chunks
             const parsedBody = Buffer.concat(body).toString()

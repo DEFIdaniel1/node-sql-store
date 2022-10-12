@@ -1,0 +1,24 @@
+{
+    "name": "1nodeintro",
+    "version": "1.0.0",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DEFIdaniel1/1nodeIntro.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/DEFIdaniel1/1nodeIntro/issues"
+    },
+    "homepage": "https://github.com/DEFIdaniel1/1nodeIntro#readme",
+    "description": "",
+    "dependencies": {
+        "express": "^4.18.2"
+    }
+}
