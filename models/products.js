@@ -1,17 +1,36 @@
-const products = []
+const fs = require('fs')
+const path = require('path')
 
+const productPath = path.join(
+    path.dirname(require.main.filename),
+    'data',
+    'products.json'
+)
+
+const getProductsFromFile = (callback) => {
+    fs.readFile(productPath, (err, fileContent) => {
+        if (err) {
+            return callback([])
+        }
+        callback(JSON.parse(fileContent))
+    })
+}
 module.exports = class Product {
     constructor(t) {
         this.title = t
     }
-
     save() {
         // pushing the whole object created by the class - product
-        products.push(this)
+        getProductsFromFile((products) => {
+            products.push(this)
+            fs.writeFile(productPath, JSON.stringify(products), (err) => {
+                console.log(err)
+            })
+        })
     }
-
     // need static to call function on the class itself
-    static fetchAll() {
-        return products
+    // need to use callback function or else it will render undefined since it is asynchronous
+    static fetchAll(callback) {
+        getProductsFromFile(callback)
     }
 }
