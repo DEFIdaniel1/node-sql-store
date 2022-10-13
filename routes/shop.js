@@ -7,7 +7,12 @@ const router = express.Router()
 const { products } = require('./admin')
 
 router.get('/', (req, res, next) => {
-    res.sendFile(path.join(rootDir, 'views', 'shop.html'))
+    // res.sendFile(path.join(rootDir, 'views', 'shop.html'))
+    res.render('shop', {
+        pageTitle: 'Shop Page',
+        prods: products,
+        path: '/',
+    })
     console.log(products)
 })
 
