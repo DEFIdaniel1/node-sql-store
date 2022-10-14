@@ -33,9 +33,12 @@ exports.getHome = (req, res, next) => {
     })
 }
 exports.getCart = (req, res, next) => {
-    res.render('shop/cart', {
-        pageTitle: 'Cart',
-        path: '/cart',
+    Product.fetchAll((products) => {
+        res.render('shop/cart', {
+            pageTitle: 'Cart',
+            path: '/cart',
+            products: products,
+        })
     })
 }
 exports.postCart = (req, res, next) => {

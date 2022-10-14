@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
+const Cart = require('./cart')
+
 const productPath = path.join(
     path.dirname(require.main.filename),
     'data',
@@ -16,23 +18,57 @@ const getProductsFromFile = (callback) => {
     })
 }
 module.exports = class Product {
-    constructor(title, imageUrl, description, price) {
+    constructor(id, title, imageUrl, description, price) {
+        this.id = id
         this.title = title
         this.imageUrl = imageUrl
         this.description = description
         this.price = price
-        this.id = Math.floor(Math.random()) * Date.now()
     }
     save() {
         // pushing the whole object created by the class - product
         getProductsFromFile((products) => {
-            products.push(this)
-            fs.writeFile(productPath, JSON.stringify(products), (err) => {
-                console.log(err)
-            })
+            //add new product
+            if (this.id) {
+                const existingProductIndex = products.findIndex(
+                    (p) => p.id === this.id
+                )
+                const updatedProducts = [...products]
+                updatedProducts[existingProductIndex] = this
+                fs.writeFile(
+                    productPath,
+                    JSON.stringify(updatedProducts),
+                    (err) => {
+                        console.log(err)
+                    }
+                )
+            } else {
+                //update existing product
+                this.id = Math.floor(Math.random() * Date.now()).toString()
+                products.push(this)
+                fs.writeFile(productPath, JSON.stringify(products), (err) => {
+                    console.log(err)
+                })
+            }
         })
     }
-    // need static to call function on the class itself
+    static deleteProduct(id) {
+        getProductsFromFile((products) => {
+            const product = products.find((prod) => prod.id === id)
+            const updatedProducts = products.filter((p) => p.id !== id)
+            fs.writeFile(
+                productPath,
+                JSON.stringify(updatedProducts),
+                (err) => {
+                    if (!err) {
+                        Cart.removeProduct(id, product.price)
+                    }
+                    console.log(err)
+                }
+            )
+        })
+    }
+
     // need to use callback function or else it will render undefined since it is asynchronous
     static fetchAll(callback) {
         getProductsFromFile(callback)

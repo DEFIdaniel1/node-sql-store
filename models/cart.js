@@ -31,8 +31,27 @@ module.exports = class Cart {
                 updatedProduct = { id: id, qty: 1 }
                 cart.products = [...cart.products, updatedProduct]
             }
-            cart.totalPrice = cart.totalPrice + productPrice
+            cart.totalPrice = cart.totalPrice + +productPrice
             fs.writeFile(productPath, JSON.stringify(cart), (err) => {
+                console.log(err)
+            })
+        })
+    }
+    static removeProduct(id, productPrice) {
+        fs.readFile(productPath, (err, fileContent) => {
+            if (err) {
+                return
+            }
+            const updatedCart = { ...JSON.parse(fileContent) }
+            const product = updatedCart.products.find((prod) => prod.id === id)
+            const productQty = product.qty
+            updatedCart.products = updatedCart.products.filter(
+                (prod) => prod.id !== id
+            )
+            updatedCart.totalPrice =
+                updatedCart.totalPrice - productPrice * productQty
+
+            fs.writeFile(productPath, JSON.stringify(updatedCart), (err) => {
                 console.log(err)
             })
         })
