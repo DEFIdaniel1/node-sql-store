@@ -12,9 +12,10 @@ exports.getProducts = (req, res, next) => {
 
 exports.getAddProduct = (req, res, next) => {
     // non-Express method: res.sendFile(path.join(rootDir, 'views', 'add-product.html'))
-    res.render('admin/add-product', {
+    res.render('admin/edit-product', {
         pageTitle: 'Admin Page',
         path: '/admin/add-product',
+        editing: false,
     })
 }
 exports.postAddProduct = (req, res, next) => {
@@ -29,9 +30,21 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.getEditProducts = (req, res, next) => {
-    res.render('admin/edit-product', {
-        pageTitle: 'Edit Products',
-        path: '/admin/edit-product',
+    const editMode = req.query.edit
+    if (!editMode === 'true') {
+        return res.redirect('/')
+    }
+    const prodId = req.params.productId
+    Product.findById(prodId, (product) => {
+        if (!product) {
+            return res.redirect('/')
+        }
+        res.render('admin/edit-product', {
+            pageTitle: 'Edit Product',
+            path: '/admin/edit-product',
+            editing: editMode,
+            product: product,
+        })
     })
 }
 exports.postEditProducts = (req, res, next) => {

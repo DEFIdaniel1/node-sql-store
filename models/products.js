@@ -21,6 +21,7 @@ module.exports = class Product {
         this.imageUrl = imageUrl
         this.description = description
         this.price = price
+        this.id = Math.floor(Math.random()) * Date.now()
     }
     save() {
         // pushing the whole object created by the class - product
@@ -35,5 +36,12 @@ module.exports = class Product {
     // need to use callback function or else it will render undefined since it is asynchronous
     static fetchAll(callback) {
         getProductsFromFile(callback)
+    }
+
+    static findById(id, callback) {
+        getProductsFromFile((products) => {
+            const foundProduct = products.find((p) => p.id === id)
+            callback(foundProduct)
+        })
     }
 }
