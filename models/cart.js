@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const productPath = path.join(
+const cartPath = path.join(
     path.dirname(require.main.filename),
     'data',
     'cart.json'
@@ -9,7 +9,7 @@ const productPath = path.join(
 
 module.exports = class Cart {
     static addProduct(id, productPrice) {
-        fs.readFile(productPath, (err, fileContent) => {
+        fs.readFile(cartPath, (err, fileContent) => {
             // fetch the previous cart
             let cart = { products: [], totalPrice: 0 }
             if (!err) {
@@ -32,18 +32,21 @@ module.exports = class Cart {
                 cart.products = [...cart.products, updatedProduct]
             }
             cart.totalPrice = cart.totalPrice + +productPrice
-            fs.writeFile(productPath, JSON.stringify(cart), (err) => {
+            fs.writeFile(cartPath, JSON.stringify(cart), (err) => {
                 console.log(err)
             })
         })
     }
     static removeProduct(id, productPrice) {
-        fs.readFile(productPath, (err, fileContent) => {
+        fs.readFile(cartPath, (err, fileContent) => {
             if (err) {
                 return
             }
             const updatedCart = { ...JSON.parse(fileContent) }
             const product = updatedCart.products.find((prod) => prod.id === id)
+            if (!product) {
+                return
+            }
             const productQty = product.qty
             updatedCart.products = updatedCart.products.filter(
                 (prod) => prod.id !== id
@@ -51,9 +54,19 @@ module.exports = class Cart {
             updatedCart.totalPrice =
                 updatedCart.totalPrice - productPrice * productQty
 
-            fs.writeFile(productPath, JSON.stringify(updatedCart), (err) => {
+            fs.writeFile(cartPath, JSON.stringify(updatedCart), (err) => {
                 console.log(err)
             })
+        })
+    }
+    static getCart(callback) {
+        fs.readFile(cartPath, (err, fileContent) => {
+            const cart = JSON.parse(fileContent)
+            if (err) {
+                callback(null)
+            } else {
+                callback(cart)
+            }
         })
     }
 }
