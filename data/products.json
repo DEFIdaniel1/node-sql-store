@@ -1,1 +1,8 @@
-[{"title":"book"},{"title":"Another book"},{"title":"wat"}]
+[
+    {
+        "title": "Expensive Perfume",
+        "imageUrl": "https://images.pexels.com/photos/264870/pexels-photo-264870.jpeg",
+        "description": "So expensive. You must buy it quickly!",
+        "price": "999.99"
+    }
+]
