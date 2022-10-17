@@ -3,23 +3,22 @@ const Cart = require('../models/cart')
 
 // SHOP
 exports.getHome = (req, res, next) => {
-    Product.fetchAll()
-        .then(([productRows, fieldData]) => {
+    Product.findAll()
+        .then((products) => {
             res.render('shop/home', {
                 pageTitle: 'Shop Name',
-                prods: productRows,
+                prods: products,
                 path: '/',
             })
         })
         .catch((err) => console.log(err))
 }
 exports.getProducts = (req, res, next) => {
-    // res.sendFile(path.join(rootDir, 'views', 'shop.html'))
-    Product.fetchAll()
-        .then(([productRows, fieldData]) => {
+    Product.findAll()
+        .then((products) => {
             res.render('shop/product-list', {
                 pageTitle: 'Products',
-                prods: productRows,
+                prods: products,
                 path: '/products',
             })
         })
@@ -27,11 +26,11 @@ exports.getProducts = (req, res, next) => {
 }
 exports.getProductDetails = (req, res, next) => {
     const prodId = req.params.productId
-    Product.findById(prodId)
-        .then(([product]) => {
+    Product.findByPk(prodId)
+        .then((product) => {
             res.render('shop/product-details', {
-                product: product[0],
-                pageTitle: product[0].title,
+                product: product,
+                pageTitle: product.title,
                 path: '/products',
             })
         })

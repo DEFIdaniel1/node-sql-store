@@ -9,7 +9,7 @@ const MySqlPassword = process.env.MY_SQL_PASSWORD
 // })
 // module.exports = pool.promise()
 
-const Sequelize = require('sequelize')
+const { Sequelize } = require('sequelize')
 const sequelize = new Sequelize('node-Udemy', 'root', MySqlPassword, {
     dialect: 'mysql',
     host: 'localhost',
