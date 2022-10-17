@@ -16,7 +16,12 @@ app.use(express.static('public'))
 const sequelize = require('./utils/database')
 const Product = require('./models/products')
 const User = require('./models/user')
+const Cart = require('./models/cart')
+const CartItem = require('./models/cart-item')
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' })
+User.hasOne(Cart)
+Cart.belongsToMany(Product, { through: CartItem })
+Product.belongsToMany(Cart, { through: CartItem })
 
 // Get user data
 app.use((req, res, next) => {
@@ -35,6 +40,7 @@ app.use(shopRouter)
 app.use(errorController.get404)
 
 sequelize
+    // .sync({ force: true })
     .sync()
     .then((result) => {
         return User.findByPk(1)
@@ -46,7 +52,9 @@ sequelize
         return user
     })
     .then((user) => {
-        // console.log(user)
+        user.createCart()
+    })
+    .then((user) => {
         app.listen(3000)
     })
     .catch((err) => {
