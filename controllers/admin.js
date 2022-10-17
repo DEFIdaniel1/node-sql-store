@@ -26,8 +26,16 @@ exports.postAddProduct = (req, res, next) => {
         price: req.body.price,
         description: req.body.description,
         imageUrl: req.body.imageUrl,
+        userId: req.user.id,
     })
-        .then((result) => {
+        // req.user
+        //     .createProduct({
+        //         title: req.body.title,
+        //         price: req.body.price,
+        //         description: req.body.description,
+        //         imageUrl: req.body.imageUrl,
+        //     })
+        .then(() => {
             console.log('Created new product')
             res.redirect('/')
         })
@@ -74,6 +82,12 @@ exports.postEditProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId
-    Product.deleteProduct(prodId)
-    res.redirect('/admin/products')
+    Product.destroy({ where: { id: prodId } })
+        // alt destroy() method
+        // Product.findByPk(prodId)
+        //     .then((product) => {
+        //         product.destroy()
+        //     })
+        .then(res.redirect('/admin/products'))
+        .catch((err) => console.log(err))
 }
