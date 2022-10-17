@@ -36,6 +36,7 @@ exports.getProductDetails = (req, res, next) => {
         })
         .catch((err) => console.log(err))
 }
+
 exports.getCart = (req, res, next) => {
     Cart.getCart((cart) => {
         Product.fetchAll((products) => {
