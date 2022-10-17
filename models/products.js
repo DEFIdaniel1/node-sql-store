@@ -9,6 +9,15 @@ const productPath = path.join(
     'products.json'
 )
 
+const db = require('./utils/database')
+db.execute('SELECT * FROM products')
+    .then((result) => {
+        console.log(result)
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+
 const getProductsFromFile = (callback) => {
     fs.readFile(productPath, (err, fileContent) => {
         if (err) {
