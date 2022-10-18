@@ -1,5 +1,4 @@
 const Product = require('../models/products')
-const Cart = require('../models/cart')
 
 // SHOP
 exports.getHome = (req, res, next) => {
@@ -110,9 +109,40 @@ exports.postCartDeleteProduct = (req, res, next) => {
         .catch((err) => console.log(err))
 }
 
-exports.getCheckout = (req, res, next) => {
-    res.render('shop/checkout', { path: '/checkout', pageTitle: 'Checkout' })
-}
 exports.getOrders = (req, res, next) => {
     res.render('shop/orders', { path: '/orders', pageTitle: 'Orders' })
+}
+exports.postOrder = (req, res, next) => {
+    let orderProducts
+    req.user
+        .getCart()
+        //get products from cart
+        .then((cart) => {
+            return cart.getProducts()
+        })
+        //create order
+        .then((products) => {
+            orderProducts = products
+            return req.user.createOrder()
+        })
+        // add products to order
+        .then((order) => {
+            return order.addProducts(
+                // sequelize needs unique orderItem value (not quantity), which we added in the DB. replacing quantity w/ orderItem
+                orderProducts.map((product) => {
+                    product.orderItem = {
+                        quantity: product.cartItem.quantity,
+                    }
+                    return product
+                })
+            )
+        })
+        .then((result) => {
+            res.redirect('shop/orders')
+        })
+        .catch((err) => console.log(err))
+}
+
+exports.getCheckout = (req, res, next) => {
+    res.render('shop/checkout', { path: '/checkout', pageTitle: 'Checkout' })
 }
