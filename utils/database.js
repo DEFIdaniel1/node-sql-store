@@ -1,17 +1,17 @@
+const mongodb = require('mongodb')
 require('dotenv').config()
-const MySqlPassword = process.env.MY_SQL_PASSWORD
-// const mysql = require('mysql2')
-// const pool = mysql.createPool({
-//     host: 'localhost',
-//     user: 'root',
-//     database: 'node-Udemy',
-//     password: MySqlPassword,
-// })
-// module.exports = pool.promise()
+const MongoClient = mongodb.MongoClient
 
-const { Sequelize } = require('sequelize')
-const sequelize = new Sequelize('node-Udemy', 'root', MySqlPassword, {
-    dialect: 'mysql',
-    host: 'localhost',
-})
-module.exports = sequelize
+const mongoConnect = (callback) => {
+    const mongodbPassword = process.env.MONGO_DB_PASSWORD
+    MongoClient.connect(
+        `mongodb+srv://dpisterzi:${mongodbPassword}@cluster0.wdwpbii.mongodb.net/?retryWrites=true&w=majority`
+    )
+        .then((client) => {
+            console.log('Connected')
+            callback(client)
+        })
+        .catch((err) => console.log(err))
+}
+
+module.exports = mongoConnect
