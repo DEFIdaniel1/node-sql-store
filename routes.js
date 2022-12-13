@@ -20,11 +20,8 @@ const requestHandler = (req, res) => {
             body.push(chunk)
         })
         return req.on('end', () => {
-            // end tells us the chunks have all been loaded
-            // need to buffer the data to interact with all chunks
             const parsedBody = Buffer.concat(body).toString()
             const message = parsedBody.split('=')[1]
-            // message="input message" will split at = and index1 after that
             fs.writeFile('message.txt', message, (err) => {
                 res.statusCode = 302
                 res.setHeader('Location', '/')

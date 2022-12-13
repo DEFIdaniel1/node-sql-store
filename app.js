@@ -32,7 +32,6 @@ Order.belongsToMany(Product, { through: OrderItem })
 app.use((req, res, next) => {
     User.findByPk(1)
         .then((user) => {
-            //sequelize user object added (has all sequalize methods)
             req.user = user
             next()
         })
@@ -45,6 +44,7 @@ app.use(shopRouter)
 app.use(errorController.get404)
 
 sequelize
+    // Force sync will update DB table to match
     // .sync({ force: true })
     .sync()
     .then((result) => {

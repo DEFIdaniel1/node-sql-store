@@ -13,7 +13,6 @@ exports.getProducts = (req, res, next) => {
 }
 
 exports.getAddProduct = (req, res, next) => {
-    // non-Express method: res.sendFile(path.join(rootDir, 'views', 'add-product.html'))
     res.render('admin/edit-product', {
         pageTitle: 'Admin Page',
         path: '/admin/add-product',
@@ -28,13 +27,6 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: req.body.imageUrl,
         userId: req.user.id,
     })
-        // req.user
-        //     .createProduct({
-        //         title: req.body.title,
-        //         price: req.body.price,
-        //         description: req.body.description,
-        //         imageUrl: req.body.imageUrl,
-        //     })
         .then(() => {
             console.log('Created new product')
             res.redirect('/')
@@ -83,11 +75,6 @@ exports.postEditProducts = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId
     Product.destroy({ where: { id: prodId } })
-        // alt destroy() method
-        // Product.findByPk(prodId)
-        //     .then((product) => {
-        //         product.destroy()
-        //     })
         .then(res.redirect('/admin/products'))
         .catch((err) => console.log(err))
 }
